@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import styled, { keyframes, ThemeProvider } from 'styled-components'
-import {compose, withProps, withHandlers} from 'recompose'
+import {compose, withState, withHandlers} from 'recompose'
 // import logo from './logo.svg';
 import * as R from "ramda";
 import { Button } from 'react-bootstrap';
@@ -40,6 +40,7 @@ const Wrapper = styled.div`
 `
 
 const enhance = compose(
+  withState('value', 'updateValue', ''),
   withHandlers({
     onSave: (props) => (event) => {
       console.log('onSave');
@@ -48,23 +49,26 @@ const enhance = compose(
       console.log('onUpdate');
     },
     onDelete: (props) => (event) => {
-      console.log('onDelete');
+      console.log(props.value);
+    },
+    onChange: props => event => {
+      props.updateValue(event.target.value)
     }
   })
 )
 
-const SaveSearch = enhance( (props) => 
+const SaveSearch = enhance( ({onDelete, onUpdate, onSave, onChange, value})=> 
     <Wrapper>
       <Title>
         Menage Save Searches
       </Title>
       <Body>
-        <input type='text'></input>
+        <input type='text' value={value} onChange={onChange}></input>
       </Body>
       <Footer>
-        <Button bsStyle='link' className={'btn btn-link btn-lg'} onClick={props.onDelete}>Delete</Button>
-        <Button bsStyle='info' className={'btn btn-info btn-lg'} onClick={props.onUpdate}>Update</Button>
-        <Button bsStyle='success' className={'btn btn-success btn-lg'} onClick={props.onSave}>Save</Button>
+        <Button bsStyle='link' className={'btn btn-link btn-lg'} onClick={onDelete}>Delete</Button>
+        <Button bsStyle='info' className={'btn btn-info btn-lg'} onClick={onUpdate}>Update</Button>
+        <Button bsStyle='success' className={'btn btn-success btn-lg'} onClick={onSave}>Save</Button>
       </Footer>
     </Wrapper>
 );
