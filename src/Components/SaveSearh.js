@@ -40,10 +40,12 @@ const Wrapper = styled.div`
 `
 
 const saveSearchReducer = (state, action) => {
-  console.log({state});
+  console.log({action});
   switch (action.type) {
     case 'SAVE':
-      return state.push('2');
+      let newState = {...state};
+      newState.items.push(action.payload);
+      return newState;
     default: {
       return state;
     }
@@ -52,9 +54,9 @@ const saveSearchReducer = (state, action) => {
 
 const enhance = compose(
   withState('value', 'updateValue', []),
-  withReducer('savedSearches', 'dispatch', saveSearchReducer, [1]),
+  withReducer('savedSearches', 'dispatch', saveSearchReducer, {items: ['']}),
   withHandlers({
-    onSave: ({ dispatch }) => (e) => dispatch({ type: 'SAVE' }),
+    onSave: ({dispatch, value}) => (event) => dispatch({ type: 'SAVE', payload: value }),
     onUpdate: (props) => (event) => {
       console.log('onUpdate');
     },
@@ -77,7 +79,7 @@ const SaveSearch = enhance( ({onDelete, onUpdate, onSave, onChange, value, saved
         <Body>
           <input type='text' value={value} onChange={onChange}></input>
           <div>
-            Saved Searches: {savedSearches}
+            Saved Searches: {savedSearches.items.map(x => <span>{x}-</span>)}
           </div>
         </Body>
         <Footer>
@@ -91,5 +93,3 @@ const SaveSearch = enhance( ({onDelete, onUpdate, onSave, onChange, value, saved
 );
 
 export default SaveSearch;
-
-
