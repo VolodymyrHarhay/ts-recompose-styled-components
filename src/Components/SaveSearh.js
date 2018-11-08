@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import styled, { keyframes, ThemeProvider } from 'styled-components'
-import {compose, withState, withHandlers} from 'recompose'
+import {compose, withState, withHandlers, withReducer} from 'recompose'
 // import logo from './logo.svg';
 import * as R from "ramda";
 import { Button } from 'react-bootstrap';
@@ -39,12 +39,22 @@ const Wrapper = styled.div`
   text-align: center;
 `
 
+const saveSearchReducer = (state, action) => {
+  console.log({state});
+  switch (action.type) {
+    case 'SAVE':
+      return state.push('2');
+    default: {
+      return state;
+    }
+  }
+}
+
 const enhance = compose(
-  withState('value', 'updateValue', ''),
+  withState('value', 'updateValue', []),
+  withReducer('savedSearches', 'dispatch', saveSearchReducer, [1]),
   withHandlers({
-    onSave: (props) => (event) => {
-      console.log('onSave');
-    },
+    onSave: ({ dispatch }) => (e) => dispatch({ type: 'SAVE' }),
     onUpdate: (props) => (event) => {
       console.log('onUpdate');
     },
@@ -57,20 +67,27 @@ const enhance = compose(
   })
 )
 
-const SaveSearch = enhance( ({onDelete, onUpdate, onSave, onChange, value})=> 
-    <Wrapper>
-      <Title>
-        Menage Save Searches
-      </Title>
-      <Body>
-        <input type='text' value={value} onChange={onChange}></input>
-      </Body>
-      <Footer>
-        <Button bsStyle='link' className={'btn btn-link btn-lg'} onClick={onDelete}>Delete</Button>
-        <Button bsStyle='info' className={'btn btn-info btn-lg'} onClick={onUpdate}>Update</Button>
-        <Button bsStyle='success' className={'btn btn-success btn-lg'} onClick={onSave}>Save</Button>
-      </Footer>
-    </Wrapper>
+const SaveSearch = enhance( ({onDelete, onUpdate, onSave, onChange, value, savedSearches})=> {
+    console.log({savedSearches});
+    return (
+      <Wrapper>
+        <Title>
+          Menage Save Searches
+        </Title>
+        <Body>
+          <input type='text' value={value} onChange={onChange}></input>
+          <div>
+            Saved Searches: {savedSearches}
+          </div>
+        </Body>
+        <Footer>
+          <Button bsStyle='link' className={'btn btn-link btn-lg'} onClick={onDelete}>Delete</Button>
+          <Button bsStyle='info' className={'btn btn-info btn-lg'} onClick={onUpdate}>Update</Button>
+          <Button bsStyle='success' className={'btn btn-success btn-lg'} onClick={onSave}>Save</Button>
+        </Footer>
+      </Wrapper>
+    );
+  }
 );
 
 export default SaveSearch;
