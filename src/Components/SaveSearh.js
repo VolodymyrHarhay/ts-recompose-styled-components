@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components'
 import {compose, withHandlers, withReducer} from 'recompose'
-import { Button } from 'react-bootstrap';
+import Button from 'react-bootstrap/lib/Button';
 // import { createGlobalStyle } from 'styled-components'
 // import * as R from "ramda";
 
@@ -45,27 +45,38 @@ const Error = styled.div`
   font-size: 12px;
 `
 
-
 const items = ['1', '2', '3'];
 
 const saveSearchReducer = (state, action) => {
-  console.log({state});
-  console.log({action});
   switch (action.type) {
     case 'SAVE':
-      let newState = {...state};
-      const { items } = state;
+    {
+      const [...items] = state.items;
       if (items.includes(state.value)) {
         return {...state, isError: true, errorMessage: 'Such Save Search is already exist'};
       }
       else {
-        newState.items.push(state.value);
-        return newState;
+        items.push(state.value);
+        return {...state, items};
       }
+    }
+
+    case 'DELETE':
+    {
+      let [...items] = state.items;
+      if (items.includes(state.value)) {
+        items = items.filter(x => x !== state.value);
+        return {...state, items};
+      }
+      else {
+        return {...state, items, isError: true, errorMessage: 'Such Save Search was not found '};
+      }
+    }
 
     case 'CHANGE':
-        return {...state, value: action.value, isError: false, errorMessage: ''};
-
+    {
+      return {...state, value: action.value, isError: false, errorMessage: ''};
+    }
 
     default: {
       return state;
@@ -75,6 +86,10 @@ const saveSearchReducer = (state, action) => {
 
 const onSaveCLick = ({ dispatch }) => (event) => {
   dispatch({ type: 'SAVE' })
+};
+
+const onDeleteCLick = ({ dispatch }) => (event) => {
+  dispatch({ type: 'DELETE' })
 };
 
 const onChangeName = ({ dispatch }) => (event) => {
@@ -90,9 +105,7 @@ const enhance = compose(
     onUpdate: (props) => (event) => {
       console.log('onUpdate');
     },
-    onDelete: (props) => (event) => {
-      console.log(props.value);
-    },
+    onDelete: onDeleteCLick,
     onChange: onChangeName
   })
 )
@@ -113,13 +126,13 @@ const SaveSearch = enhance( (props)=> {
             </Error>
           }
           <div>
-            Saved Searches: {savedSearches.items.map(x => <span>{x}-</span>)}
+            Saved Searches: {savedSearches.items.map((x, i) => <span key={i}>{x}-</span>)}
           </div>
         </Body>
         <Footer>
-          <Button bsStyle='link' className={'btn btn-link btn-lg'} onClick={onDelete}>Delete</Button>
-          <Button bsStyle='info' className={'btn btn-info btn-lg'} onClick={onUpdate}>Update</Button>
-          <Button bsStyle='success' className={'btn btn-success btn-lg'} onClick={onSave}>Save</Button>
+          <Button variant='link' onClick={onDelete}>Delete</Button>
+          <Button variant='info' onClick={onUpdate}>Update</Button>
+          <Button variant='success' onClick={onSave}>Save</Button>
         </Footer>
       </Wrapper>
     );
