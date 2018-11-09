@@ -1,10 +1,9 @@
-import React, { Component } from 'react';
-import styled, { keyframes, ThemeProvider } from 'styled-components'
-import {compose, withState, withHandlers, withReducer} from 'recompose'
-// import logo from './logo.svg';
-import * as R from "ramda";
+import React from 'react';
+import styled from 'styled-components'
+import {compose, withHandlers, withReducer} from 'recompose'
 import { Button } from 'react-bootstrap';
-import { createGlobalStyle } from 'styled-components'
+// import { createGlobalStyle } from 'styled-components'
+// import * as R from "ramda";
 
 
 // const AppTitle = styled<{ color: string }, 'h1'>('h1')`
@@ -56,26 +55,36 @@ const saveSearchReducer = (state, action) => {
     case 'SAVE':
       let newState = {...state};
       const { items } = state;
-      if (items.includes(action.newSearch)) {
+      if (items.includes(state.value)) {
         return {...state, isError: true, errorMessage: 'Such Save Search is already exist'};
       }
       else {
-        newState.items.push(action.newSearch);
+        newState.items.push(state.value);
         return newState;
       }
+
+    case 'CHANGE':
+        return {...state, value: action.value, isError: false, errorMessage: ''};
+
+
     default: {
       return state;
     }
   }
 }
 
-const onSaveCLick = ({dispatch, value}) => (event) => {
-  dispatch({ type: 'SAVE', newSearch: value })
+const onSaveCLick = ({ dispatch }) => (event) => {
+  dispatch({ type: 'SAVE' })
 };
 
+const onChangeName = ({ dispatch }) => (event) => {
+  dispatch({ type: 'CHANGE', value: event.target.value })
+};
+
+
 const enhance = compose(
-  withState('value', 'updateValue', []),
-  withReducer('savedSearches', 'dispatch', saveSearchReducer, {items: items, isError: false, errorMessage: ''}),
+  // withState('value', 'updateValue', []),
+  withReducer('savedSearches', 'dispatch', saveSearchReducer, {items: items, value: '', isError: false, errorMessage: ''}),
   withHandlers({
     onSave: onSaveCLick,
     onUpdate: (props) => (event) => {
@@ -84,21 +93,19 @@ const enhance = compose(
     onDelete: (props) => (event) => {
       console.log(props.value);
     },
-    onChange: props => event => {
-      props.updateValue(event.target.value)
-    }
+    onChange: onChangeName
   })
 )
 
 const SaveSearch = enhance( (props)=> {
-    const { onDelete, onUpdate, onSave, onChange, value, savedSearches } = props;
+    const { onDelete, onUpdate, onSave, onChange, savedSearches } = props;
     return (
       <Wrapper>
         <Title>
           Menage Save Searches
         </Title>
         <Body>
-          <input type='text' value={value} onChange={onChange}></input>
+          <input type='text' value={savedSearches.value} onChange={onChange}></input>
           {
             savedSearches.isError &&
             <Error>
