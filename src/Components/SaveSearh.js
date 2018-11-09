@@ -39,24 +39,45 @@ const Wrapper = styled.div`
   text-align: center;
 `
 
+const Error = styled.div`
+  color: red;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  font-size: 12px;
+`
+
+
+const items = ['1', '2', '3'];
+
 const saveSearchReducer = (state, action) => {
+  console.log({state});
   console.log({action});
   switch (action.type) {
     case 'SAVE':
       let newState = {...state};
-      newState.items.push(action.payload);
-      return newState;
+      const { items } = state;
+      if (items.includes(action.newSearch)) {
+        return {...state, isError: true, errorMessage: 'Such Save Search is already exist'};
+      }
+      else {
+        newState.items.push(action.newSearch);
+        return newState;
+      }
     default: {
       return state;
     }
   }
 }
 
+const onSaveCLick = ({dispatch, value}) => (event) => {
+  dispatch({ type: 'SAVE', newSearch: value })
+};
+
 const enhance = compose(
   withState('value', 'updateValue', []),
-  withReducer('savedSearches', 'dispatch', saveSearchReducer, {items: ['']}),
+  withReducer('savedSearches', 'dispatch', saveSearchReducer, {items: items, isError: false, errorMessage: ''}),
   withHandlers({
-    onSave: ({dispatch, value}) => (event) => dispatch({ type: 'SAVE', payload: value }),
+    onSave: onSaveCLick,
     onUpdate: (props) => (event) => {
       console.log('onUpdate');
     },
@@ -69,8 +90,8 @@ const enhance = compose(
   })
 )
 
-const SaveSearch = enhance( ({onDelete, onUpdate, onSave, onChange, value, savedSearches})=> {
-    console.log({savedSearches});
+const SaveSearch = enhance( (props)=> {
+    const { onDelete, onUpdate, onSave, onChange, value, savedSearches } = props;
     return (
       <Wrapper>
         <Title>
@@ -78,6 +99,12 @@ const SaveSearch = enhance( ({onDelete, onUpdate, onSave, onChange, value, saved
         </Title>
         <Body>
           <input type='text' value={value} onChange={onChange}></input>
+          {
+            savedSearches.isError &&
+            <Error>
+              {savedSearches.errorMessage}
+            </Error>
+          }
           <div>
             Saved Searches: {savedSearches.items.map(x => <span>{x}-</span>)}
           </div>
