@@ -47,7 +47,37 @@ const Error = styled.div`
 
 const items = ['1', '2', '3'];
 
-const saveSearchReducer = (state, action) => {
+type SavedSearchesType = {
+  value: any,
+  errorMessage: string,
+  isError: boolean,
+  items: string[]
+}
+
+enum SavedSearchesActionNames {
+  SAVE = 'SAVE',
+  DELETE = 'DELETE',
+  UPDATE = 'UPDATE',
+  CHANGE = 'CHANGE'
+}
+
+interface SavedSearchesAction {
+  type: SavedSearchesActionNames;
+  value?: string
+}
+
+
+type SaveSearchProps = {
+  onDelete: () => void,
+  onSave: () => void,
+  onUpdate: () => void,
+  onChange: () => void,
+  savedSearches: SavedSearchesType
+}
+
+type saveSearchReducer = (action: SavedSearchesAction) => SavedSearchesType;
+
+const saveSearchReducer = (state: SavedSearchesType, action: SavedSearchesAction) => {
   switch (action.type) {
     case 'SAVE':
     {
@@ -65,7 +95,7 @@ const saveSearchReducer = (state, action) => {
     {
       let [...items] = state.items;
       if (items.includes(state.value)) {
-        items = items.filter(x => x !== state.value);
+        items = items.filter((x: string) => x !== state.value);
         return {...state, items};
       }
       else {
@@ -84,33 +114,31 @@ const saveSearchReducer = (state, action) => {
   }
 }
 
-const onSaveCLick = ({ dispatch }) => (event) => {
-  dispatch({ type: 'SAVE' })
+const onSaveCLick = ({dispatch}: {dispatch: saveSearchReducer}) => (event: React.FormEvent<HTMLInputElement>) => {
+  dispatch({ type: SavedSearchesActionNames.SAVE})
 };
 
-const onDeleteCLick = ({ dispatch }) => (event) => {
-  dispatch({ type: 'DELETE' })
+const onDeleteCLick = ({dispatch}: {dispatch: saveSearchReducer}) => (event: React.FormEvent<HTMLInputElement>) => {
+  dispatch({ type: SavedSearchesActionNames.DELETE })
 };
 
-const onChangeName = ({ dispatch }) => (event) => {
-  dispatch({ type: 'CHANGE', value: event.target.value })
+const onChangeName = ({dispatch}: {dispatch: saveSearchReducer}) => (event: React.FormEvent<HTMLInputElement>) => {
+  dispatch({ type: SavedSearchesActionNames.CHANGE, value: event.currentTarget.value })
 };
 
+const onUpdateClick = () => () => console.log(1);
 
 const enhance = compose(
-  // withState('value', 'updateValue', []),
   withReducer('savedSearches', 'dispatch', saveSearchReducer, {items: items, value: '', isError: false, errorMessage: ''}),
   withHandlers({
     onSave: onSaveCLick,
-    onUpdate: (props) => (event) => {
-      console.log('onUpdate');
-    },
+    onUpdate: onUpdateClick,
     onDelete: onDeleteCLick,
     onChange: onChangeName
   })
 )
 
-const SaveSearch = enhance( (props)=> {
+const SaveSearch = enhance( (props: any) => {
     const { onDelete, onUpdate, onSave, onChange, savedSearches } = props;
     return (
       <Wrapper>
@@ -126,7 +154,7 @@ const SaveSearch = enhance( (props)=> {
             </Error>
           }
           <div>
-            Saved Searches: {savedSearches.items.map((x, i) => <span key={i}>{x}-</span>)}
+            Saved Searches: {savedSearches.items.map((x: string, i: number) => <span key={i}>{x}-</span>)}
           </div>
         </Body>
         <Footer>
