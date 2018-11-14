@@ -1,4 +1,6 @@
 import React, { useState, useReducer } from 'react';
+import { List } from 'immutable';
+
 import styled from 'styled-components'
 
 import Button from 'react-bootstrap/lib/Button';
@@ -51,31 +53,31 @@ const saveSearchReducer = (state, action) => {
   switch (action.type) {
     case 'SAVE':
     {
-      const [...items] = state.items;
-      if (items.includes(state.value)) {
-        return {...state, isError: true, errorMessage: 'Such Save Search is already exist'};
+      const items = List(state.items);
+      if (items.includes(state.inputValue)) {
+        return {...state, isError: true, errorMessage: 'Such Save Search is already exist.'};
       }
       else {
-        items.push(state.value);
-        return {...state, items};
+        const modifiedItems = items.push(state.inputValue);
+        return {...state, items: modifiedItems, isError: false, errorMessage: ''};
       }
     }
 
     case 'DELETE':
     {
-      let [...items] = state.items;
-      if (items.includes(state.value)) {
-        items = items.filter((x) => x !== state.value);
-        return {...state, items};
+      const items = List(state.items);
+      if (items.includes(state.inputValue)) {
+        const modifiedItems = items.filter((x) => x !== state.inputValue);
+        return {...state, items: modifiedItems, isError: false, errorMessage: ''};
       }
       else {
-        return {...state, items, isError: true, errorMessage: 'Such Save Search was not found '};
+        return {...state, items, isError: true, errorMessage: 'Such Save Search was not found.'};
       }
     }
 
     case 'CHANGE':
     {
-      return {...state, value: action.value, isError: false, errorMessage: ''};
+      return {...state, inputValue: action.value, isError: false, errorMessage: ''};
     }
 
     default: {
@@ -84,32 +86,30 @@ const saveSearchReducer = (state, action) => {
   }
 }
 
-const onSave = (dispatch) => (event) => {
-  dispatch({ type: 'SAVE'})
+const onSave = (dispatch) => {
+  dispatch({ type: 'SAVE' });
 };
 
-// const onDelete = ({dispatch}) => (event) => {
-//   dispatch({ type: 'DELETE' })
-// };
+const onDelete = (dispatch) => {
+  dispatch({ type: 'DELETE' })
+};
 
-// const onUpdate = () => () => console.log(1);
+const onUpdate = (dispatch) => console.log(1);
 
-// const onChange = (dispatch) => (event) => {
-//   dispatch({ type: 'CHANGE', value: event.currentTarget.value })
-// };
+const onChange = (dispatch) => (event) => {
+  dispatch({ type: 'CHANGE', value: event.currentTarget.value });
+};
 
 const SaveSearch = (props) => {
-  const [searchName, setSearchName] = useState('');
-  const [savedSearches, dispatch] = useReducer(saveSearchReducer, {items: items, value: '', isError: false, errorMessage: ''});
-  
+  const [savedSearches, dispatch] = useReducer(saveSearchReducer, {inputValue: '', items: items, isError: false, errorMessage: ''});
+
   return (
     <Wrapper>
       <Title>
         Menage Save Searches
       </Title>
       <Body>
-        <input type='text' value={searchName} onChange={(event) => setSearchName(event.target.value)}></input>
-        {/* <input type='text' value={savedSearches.value} onChange={(event) => dispatch({ type: 'CHANGE', value: event.currentTarget.value })}></input> */}
+        <input type='text' value={savedSearches.value} onChange={onChange(dispatch)}/>
         {
           savedSearches.isError &&
           <Error>
@@ -121,9 +121,9 @@ const SaveSearch = (props) => {
         </div>
       </Body>
       <Footer>
-        {/* <Button variant='link' onClick={(e) => dispatch({ type: 'DELETE'})}>Delete</Button> */}
-        {/* <Button variant='info' onClick={onUpdate}>Update</Button> */}
-        <Button variant='success' onClick={onSave(dispatch)}>Save</Button>
+        <Button variant='link' onClick={() => onDelete(dispatch)}>Delete</Button>
+        <Button variant='info' onClick={() => onUpdate(dispatch)}>Update</Button>
+        <Button variant='success' onClick={() => onSave(dispatch)}>Save</Button>
       </Footer>
     </Wrapper>
   );
