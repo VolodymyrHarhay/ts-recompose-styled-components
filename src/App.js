@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import SaveSearch from './Components/SaveSearh'
+import SavedSearches from './Components/SavedSearches'
 
 
 class App extends Component {
   render() {
     return (
-      <SaveSearch/>
+      <SavedSearches/>
     );
   }
 }
