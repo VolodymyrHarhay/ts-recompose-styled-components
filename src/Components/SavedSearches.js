@@ -1,4 +1,4 @@
-import React, { useState, useReducer } from 'react';
+import React, { useReducer } from 'react';
 
 import styled from 'styled-components'
 
@@ -63,10 +63,6 @@ const onUpdate = (dispatch, id, newName ) => {
   dispatch({ type: 'UPDATE', id, newName })
 };
 
-// const onChange = (dispatch, id, newName ) => {
-//   dispatch({ type: 'UPDATE', id, newName })
-// };
-
 const SavedSearches = () => {
   const [savedSearches, dispatch] = useReducer(saveSearchReducer, {items: items, isError: false, errorMessage: ''});
 
@@ -90,7 +86,6 @@ const SavedSearches = () => {
                 <SaveSearch
                   key={i}
                   name={item.name}
-                  // onChange={(newName) => onChange(dispatch, item.id)}
                   onDelete={() => onDelete(dispatch, item.id)}
                   onUpdate={(newName) => onUpdate(dispatch, item.id, newName)}
                 />

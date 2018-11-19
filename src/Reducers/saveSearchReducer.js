@@ -21,7 +21,6 @@ const saveSearchReducer = (state, action) => {
       const index = items.findIndex(listItem => {
         return listItem.get('id') === action.id;
       });
-      console.log(index);
       items = items.delete(index); 
       return {...state, items: items.toJS(), inputValue: action.value, isError: false, errorMessage: ''};
     }
