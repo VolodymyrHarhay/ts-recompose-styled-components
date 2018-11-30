@@ -65,7 +65,7 @@ const onUpdate = (dispatch, id, newName ) => {
 
 const SavedSearches = () => {
   const [savedSearches, dispatch] = useReducer(saveSearchReducer, {items: items, isError: false, errorMessage: ''});
-
+  console.log(savedSearches.items);
   return (
     <Wrapper>
       <Title>
@@ -81,7 +81,6 @@ const SavedSearches = () => {
         <div>
           {
             savedSearches.items.map((item, i) => {
-              console.log(item);
               return(
                 <SaveSearch
                   key={i}

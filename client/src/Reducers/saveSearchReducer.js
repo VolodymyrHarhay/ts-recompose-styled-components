@@ -1,5 +1,5 @@
 
-import { List, Map, fromJS } from 'immutable';
+import { List, fromJS } from 'immutable';
 
 const saveSearchReducer = (state, action) => {
   switch (action.type) {
