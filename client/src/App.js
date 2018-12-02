@@ -21,7 +21,7 @@ class App extends Component {
   }
 
   callBackendAPI = async () => {
-    const response = await fetch('/express_backend');
+    const response = await fetch('/get');
     const body = await response.json();
 
     if (response.status !== 200) {
