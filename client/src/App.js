@@ -1,27 +1,20 @@
 import React, { Component } from 'react';
 import SavedSearches from './Components/SavedSearches';
-import styled from 'styled-components';
 
-
-const Call = styled.div `
-  font-size: 20px;
-  color: red;
-`
 
 class App extends Component {
   state = {
-    data: null
+    savedSearches: null
   };
 
   componentDidMount() {
-    // Call our fetch function below once the component mounts
-    this.callBackendAPI()
-      .then(res => this.setState({ data: res.express }))
+    this.getSavedSearches()
+      .then(data => this.setState({ savedSearches: data }))
       .catch(err => console.log(err));
   }
 
-  callBackendAPI = async () => {
-    const response = await fetch('/get');
+  getSavedSearches = async () => {
+    const response = await fetch('/getSavedSearches');
     const body = await response.json();
 
     if (response.status !== 200) {
@@ -33,8 +26,9 @@ class App extends Component {
   render() {
     return (
       <React.Fragment>
-        <SavedSearches/>
-        <Call> DATA - {this.state.data}</Call>
+        { this.state.savedSearches &&
+          <SavedSearches savedSearches={this.state.savedSearches}/>
+        }
       </React.Fragment>
     );
   }

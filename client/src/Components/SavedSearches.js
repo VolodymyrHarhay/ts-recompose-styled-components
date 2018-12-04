@@ -35,36 +35,55 @@ const Error = styled.div`
   font-size: 12px;
 `
 
-//mocked SavedSearches
-const items = [
-  {
-    id: 1,
-    name: 'name1'
-  },
-  {
-    id: 2,
-    name: 'name2'
-  },
-  {
-    id: 3,
-    name: 'name3'
-  }
-];
-
 const onSave = (dispatch) => {
   dispatch({ type: 'SAVE' });
 };
 
 const onDelete = (dispatch, id) => {
-  dispatch({ type: 'DELETE', id })
+  deleteSavedSearch(id)
+    .then(data => dispatch({ type: 'DELETE', items: data }))
+    .catch(err => console.log(err));
 };
 
 const onUpdate = (dispatch, id, newName ) => {
-  dispatch({ type: 'UPDATE', id, newName })
+  updateSavedSearch(id, newName)
+    .then(data => dispatch({ type: 'UPDATE', items: data }))
+    .catch(err => console.log(err));
 };
 
-const SavedSearches = () => {
-  const [savedSearches, dispatch] = useReducer(saveSearchReducer, {items: items, isError: false, errorMessage: ''});
+const deleteSavedSearch = async (id) => {
+  const response = await fetch(`/deleteSavedSearch/${id}`, { method: 'DELETE'});
+  const body = await response.json();
+
+  if (response.status !== 200) {
+    throw Error(body.message) 
+  }
+
+  return body;
+};
+
+const updateSavedSearch = async (id, newName) => {
+  const response = await fetch(`/updateSavedSearch/${id}`, { 
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      name: newName
+    })
+  });
+  const body = await response.json();
+
+  if (response.status !== 200) {
+    throw Error(body.message) 
+  }
+
+  return body;
+};
+
+const SavedSearches = (props) => {
+  const [savedSearches, dispatch] = useReducer(saveSearchReducer, {items: props.savedSearches, isError: false, errorMessage: ''});
   console.log(savedSearches.items);
   return (
     <Wrapper>

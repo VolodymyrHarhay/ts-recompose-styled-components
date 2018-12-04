@@ -17,22 +17,24 @@ const saveSearchReducer = (state, action) => {
 
     case 'DELETE':
     {
-      let items = fromJS(state.items);
-      const index = items.findIndex(listItem => {
-        return listItem.get('id') === action.id;
-      });
-      items = items.delete(index); 
-      return {...state, items: items.toJS(), inputValue: action.value, isError: false, errorMessage: ''};
+      // let items = fromJS(state.items);
+      // const index = items.findIndex(listItem => {
+      //   return listItem.get('id') === action.id;
+      // });
+      // items = items.delete(index); 
+      // return {...state, items: items.toJS(), inputValue: action.value, isError: false, errorMessage: ''};
+      return {...state, items: action.items}
     }
 
     case 'UPDATE':
     {
-      let items = fromJS(state.items);
-      const index = items.findIndex(listItem => {
-        return listItem.get('id') === action.id;
-      });
-      items = items.update(index, (item) => item.set('name', action.newName)); 
-      return {...state, items: items.toJS(), inputValue: action.value, isError: false, errorMessage: ''};
+      // let items = fromJS(state.items);
+      // const index = items.findIndex(listItem => {
+      //   return listItem.get('id') === action.id;
+      // });
+      // items = items.update(index, (item) => item.set('name', action.newName)); 
+      // return {...state, items: items.toJS(), inputValue: action.value, isError: false, errorMessage: ''};
+      return {...state, items: action.items}
     }
 
     default: {

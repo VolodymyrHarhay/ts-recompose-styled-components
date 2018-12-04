@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/VolodymyrHarhay/ts-recompose-styled-components#readme",
   "dependencies": {
+    "body-parser": "^1.18.3",
     "express": "^4.16.4"
   },
   "devDependencies": {

@@ -9,16 +9,16 @@ const SearchItem = styled.div`
 `;
   
 function SaveSearch(props) {
-	const { onDelete, onUpdate } = props;
+  const { onDelete, onUpdate } = props;
   const [ name, setName ] = useState(props.name);
   
   // console.log('props.name = ', props.name);
   // console.log('name = ', name);
 
- 	// useEffect(() => {
-  //   console.log('useEffect');
-  //   setName(props.name);
-	// }, [props.name]);
+ 	useEffect(() => {
+    console.log('useEffect');
+    setName(props.name);
+	}, [props.name]);
 
 	return (
 		<SearchItem>
