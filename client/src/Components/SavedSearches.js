@@ -25,14 +25,9 @@ const Body = styled.div`
 `
 
 const Wrapper = styled.div`
-  text-align: center;
-`
-
-const Error = styled.div`
-  color: red;
-  margin-top: 5px;
-  margin-bottom: 15px;
-  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `
 
 const onSave = (dispatch) => {
@@ -47,7 +42,7 @@ const onDelete = (dispatch, id) => {
 
 const onUpdate = (dispatch, id, newName ) => {
   updateSavedSearch(id, newName)
-    .then(data => dispatch({ type: 'UPDATE', items: data }))
+    .then(data => dispatch({ type: 'UPDATE', data: data }))
     .catch(err => console.log(err));
 };
 
@@ -83,8 +78,13 @@ const updateSavedSearch = async (id, newName) => {
 };
 
 const SavedSearches = (props) => {
-  const [savedSearches, dispatch] = useReducer(saveSearchReducer, {items: props.savedSearches, isError: false, errorMessage: ''});
+  const [savedSearches, dispatch] = useReducer(saveSearchReducer, {items: props.savedSearches, isError: false, errorMessage: '', errorItemId: -1});
   console.log(savedSearches.items);
+
+  const onChange  = () => {
+    dispatch({ type: 'ONCHANGE' });
+  }
+
   return (
     <Wrapper>
       <Title>
@@ -92,25 +92,25 @@ const SavedSearches = (props) => {
       </Title>
       <Body>
         {
-          savedSearches.isError &&
-          <Error>
-            {savedSearches.errorMessage}
-          </Error>
+          savedSearches.items.map((item, i) => {
+            const hasError = item.id === savedSearches.errorItemId;
+            let errorMessage = '';
+            if (hasError) {
+              errorMessage = savedSearches.errorMessage;
+            }
+            
+            return (
+              <SaveSearch
+                key={i}
+                name={item.name}
+                errorMessage={errorMessage}
+                onChange={onChange}
+                onDelete={() => onDelete(dispatch, item.id)}
+                onUpdate={(newName) => onUpdate(dispatch, item.id, newName)}
+              />
+            )
+          })
         }
-        <div>
-          {
-            savedSearches.items.map((item, i) => {
-              return(
-                <SaveSearch
-                  key={i}
-                  name={item.name}
-                  onDelete={() => onDelete(dispatch, item.id)}
-                  onUpdate={(newName) => onUpdate(dispatch, item.id, newName)}
-                />
-              )
-            })
-          }
-        </div>
       </Body>
       <Footer>
         <Button variant='success' onClick={() => console.log(savedSearches)}>Save</Button>

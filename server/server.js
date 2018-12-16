@@ -12,15 +12,15 @@ const port = process.env.PORT || 5000;
 
 let items = [
   {
-    id: 1,
-    name: 'name11'
+    id: 0,
+    name: 'name11',
   },
   {
-    id: 2,
+    id: 1,
     name: 'name22'
   },
   {
-    id: 3,
+    id: 2,
     name: 'name33'
   }
 ];
@@ -40,13 +40,24 @@ app.delete('/deleteSavedSearch/:id', (req, res) => {
 });
 
 app.post('/updateSavedSearch/:id', (req, res) => {
-
   const { name } = req.body;
-  // console.log("body = ", req.body);
-  // console.log("name = ", name);
-  // console.log("id = ", req.params.id);
-  const index = items.findIndex(item => item.id === Number(req.params.id));
-  items[index].name = name;
-  console.log(items);
-  res.send(items);
+  const isNewName = !items.filter(x => x.name === name).length;
+
+  if (isNewName) { 
+    const index = items.findIndex(item => item.id === Number(req.params.id));
+    items[index].name = name;
+    res.send({
+      items: items,
+      isError: false,
+      errorMessage: ''
+    });
+  }
+  else {
+    res.send({
+      items: items,
+      isError: true,
+      errorMessage: 'Such Save Search is already exist.',
+      errorItemId: Number(req.params.id)
+    });
+  }
 });

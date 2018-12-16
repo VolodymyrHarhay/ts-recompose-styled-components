@@ -34,7 +34,14 @@ const saveSearchReducer = (state, action) => {
       // });
       // items = items.update(index, (item) => item.set('name', action.newName)); 
       // return {...state, items: items.toJS(), inputValue: action.value, isError: false, errorMessage: ''};
-      return {...state, items: action.items}
+      console.log(action.data);
+      const { items, isError, errorMessage, errorItemId} = action.data;
+      return {...state, items, isError, errorMessage, errorItemId}
+    }
+
+    case 'ONCHANGE':
+    {
+      return {...state, isError: false, errorMessage: '', errorItemId: -1}
     }
 
     default: {
