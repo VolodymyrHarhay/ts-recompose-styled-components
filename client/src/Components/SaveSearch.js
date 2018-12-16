@@ -22,8 +22,8 @@ const Error = styled.div`
 `
   
 function SaveSearch(props) {
-  const { onDelete, onUpdate, onChange, errorMessage } = props;
-  const [ name, setName ] = useState(props.name);
+  const { onDelete, onUpdate, onChange, onSave, errorMessage, newSearch } = props;
+  const [ name, setName ] = useState(props.name || '');
   
  	useEffect(() => {
     console.log('useEffect');
@@ -33,17 +33,32 @@ function SaveSearch(props) {
 	const hasError = !!errorMessage;
 
 	return (
-		<SearchItem>
-			<input type='text' value={name} onChange={(e) => {setName(e.target.value); onChange();}} className={`${hasError ? 'hasError' : ''}`} />
-			<Button variant='link' onClick={onDelete}>Delete</Button>
-			<Button variant='info' onClick={() => onUpdate(name)}>Update</Button>
-			{ 
-				errorMessage &&
-					<Error>
-						{errorMessage}
-					</Error>
+		<div>
+			{ !newSearch ?
+				<SearchItem>
+					<input type='text' value={name} onChange={(e) => {setName(e.target.value); onChange();}} className={`${hasError ? 'hasError' : ''}`} />
+					<Button variant='link' onClick={onDelete}>Delete</Button>
+					<Button variant='info' onClick={() => onUpdate(name)}>Update</Button>
+					{ 
+						errorMessage &&
+							<Error>
+								{errorMessage}
+							</Error>
+					}
+				</SearchItem>
+				:
+				<SearchItem>
+					<input type='text' value={name} onChange={(e) => {setName(e.target.value); onChange();}} className={`${hasError ? 'hasError' : ''}`} />
+					<Button variant='info' onClick={() => onSave(name)}>Save</Button>
+					{ 
+						errorMessage &&
+							<Error>
+								{errorMessage}
+							</Error>
+					}
+				</SearchItem>
 			}
-		</SearchItem>
+		</div>
 	)
 };
   

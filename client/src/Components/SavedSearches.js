@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react';
+import React, { useReducer, useState } from 'react';
 
 import styled from 'styled-components';
 
@@ -8,13 +8,17 @@ import saveSearchReducer from '../Reducers/saveSearchReducer';
 
 import SaveSearch from './SaveSearch';
 
-import { deleteSavedSearch, updateSavedSearch } from '../services/savedSearches'
+import { deleteSavedSearch, updateSavedSearch, saveNewSearch } from '../services/savedSearches'
 
 
 const Footer = styled.div`
   margin-top: 20px;
-  button {
-    margin-right: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  input {
+    margin-right: 12px;
   }
 `
 
@@ -32,8 +36,10 @@ const Wrapper = styled.div`
   align-items: center;
 `
 
-const onSave = (dispatch) => {
-  dispatch({ type: 'SAVE' });
+const onSave = (dispatch, newName) => {
+  saveNewSearch(newName)
+    .then(data => dispatch({ type: 'SAVE', data: data }))
+    .catch(err => console.log(err));
 };
 
 const onDelete = (dispatch, id) => {
@@ -50,6 +56,7 @@ const onUpdate = (dispatch, id, newName ) => {
 
 const SavedSearches = (props) => {
   const [savedSearches, dispatch] = useReducer(saveSearchReducer, {items: props.savedSearches, isError: false, errorMessage: '', errorItemId: -1});
+  const [isAddClicked, clickAddButon] = useState(false);
   console.log(savedSearches.items);
 
   const onChange  = () => {
@@ -84,7 +91,15 @@ const SavedSearches = (props) => {
         }
       </Body>
       <Footer>
-        <Button variant='success' onClick={() => console.log(savedSearches)}>Save</Button>
+        <Button variant='success' onClick={() => clickAddButon(!isAddClicked)}>{!isAddClicked ? 'Add New' : 'Close'}</Button>
+        {
+          isAddClicked &&
+          <SaveSearch
+            newSearch
+            onChange={onChange}
+            onSave={(newName) => onSave(dispatch, newName)}
+          />
+        }
       </Footer>
     </Wrapper>
   );

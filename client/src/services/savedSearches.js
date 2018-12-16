@@ -30,3 +30,23 @@ export const updateSavedSearch = async (id, newName) => {
   return body;
 };
 
+export const saveNewSearch = async (newName) => {
+  const response = await fetch(`/saveNewSearch`, { 
+    method: 'PUT',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      name: newName
+    })
+  });
+  const body = await response.json();
+
+  if (response.status !== 200) {
+    throw Error(body.message) 
+  }
+
+  return body;
+};
+

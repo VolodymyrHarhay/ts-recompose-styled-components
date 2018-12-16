@@ -5,14 +5,15 @@ const saveSearchReducer = (state, action) => {
   switch (action.type) {
     case 'SAVE':
     {
-      const items = List(state.items);
-      if (items.includes(state.inputValue)) {
-        return {...state, isError: true, errorMessage: 'Such Save Search is already exist.'};
-      }
-      else {
-        const modifiedItems = items.push(state.inputValue);
-        return {...state, items: modifiedItems, isError: false, errorMessage: ''};
-      }
+      // const items = List(state.items);
+      // if (items.includes(state.inputValue)) {
+      //   return {...state, isError: true, errorMessage: 'Such Save Search is already exist.'};
+      // }
+      // else {
+      //   const modifiedItems = items.push(state.inputValue);
+      //   return {...state, items: modifiedItems, isError: false, errorMessage: ''};
+      // }
+      return {...state, items: action.data.items}
     }
 
     case 'DELETE':

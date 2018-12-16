@@ -61,3 +61,29 @@ app.post('/updateSavedSearch/:id', (req, res) => {
     });
   }
 });
+
+
+app.put('/saveNewSearch', (req, res) => {
+  const { name } = req.body;
+  const isNewName = !items.filter(x => x.name === name).length;
+
+  if (isNewName) { 
+    const newId = Math.max(...items.map(x => x.id)) + 1;
+    items.push({
+      id: newId,
+      name
+    });
+    res.send({
+      items: items,
+      isError: false,
+      errorMessage: ''
+    });
+  }
+  else {
+    res.send({
+      items: items,
+      isError: true,
+      errorMessage: 'Such Save Search is already exist.'
+    });
+  }
+});
