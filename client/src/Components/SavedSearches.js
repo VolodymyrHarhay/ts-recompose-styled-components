@@ -1,12 +1,14 @@
 import React, { useReducer } from 'react';
 
-import styled from 'styled-components'
+import styled from 'styled-components';
 
 import Button from 'react-bootstrap/lib/Button';
 
-import saveSearchReducer from '../Reducers/saveSearchReducer'
+import saveSearchReducer from '../Reducers/saveSearchReducer';
 
-import SaveSearch from './SaveSearch'
+import SaveSearch from './SaveSearch';
+
+import { deleteSavedSearch, updateSavedSearch } from '../services/savedSearches'
 
 
 const Footer = styled.div`
@@ -44,37 +46,6 @@ const onUpdate = (dispatch, id, newName ) => {
   updateSavedSearch(id, newName)
     .then(data => dispatch({ type: 'UPDATE', data: data }))
     .catch(err => console.log(err));
-};
-
-const deleteSavedSearch = async (id) => {
-  const response = await fetch(`/deleteSavedSearch/${id}`, { method: 'DELETE'});
-  const body = await response.json();
-
-  if (response.status !== 200) {
-    throw Error(body.message) 
-  }
-
-  return body;
-};
-
-const updateSavedSearch = async (id, newName) => {
-  const response = await fetch(`/updateSavedSearch/${id}`, { 
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      name: newName
-    })
-  });
-  const body = await response.json();
-
-  if (response.status !== 200) {
-    throw Error(body.message) 
-  }
-
-  return body;
 };
 
 const SavedSearches = (props) => {
