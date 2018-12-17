@@ -3,6 +3,12 @@ const bodyParser = require("body-parser");
 
 const app = express();
 
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
+const swaggerDocument = YAML.load('./swagger.yaml');
+ 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -29,7 +35,7 @@ let items = [
 app.listen(port, () => console.log(`Listening on port ${port}`));
 
 // create a GET route
-app.get('/getSavedSearches', (req, res) => {
+app.get('/api/getSavedSearches', (req, res) => {
   res.send(items);
 });
 

@@ -14,7 +14,14 @@ class App extends Component {
   }
 
   getSavedSearches = async () => {
-    const response = await fetch('/getSavedSearches');
+    const response = await fetch('/api/getSavedSearches', { 
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      }
+    });
     const body = await response.json();
 
     if (response.status !== 200) {
