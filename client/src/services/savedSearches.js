@@ -1,6 +1,6 @@
 
 export const deleteSavedSearch = async (id) => {
-	const response = await fetch(`/deleteSavedSearch/${id}`, { method: 'DELETE'});
+	const response = await fetch(`/api/deleteSavedSearch/${id}`, { method: 'DELETE'});
 	const body = await response.json();
 
 	if (response.status !== 200) {
@@ -11,7 +11,7 @@ export const deleteSavedSearch = async (id) => {
 };
 
 export const updateSavedSearch = async (id, newName) => {
-  const response = await fetch(`/updateSavedSearch/${id}`, { 
+  const response = await fetch(`/api/updateSavedSearch/${id}`, { 
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -31,7 +31,7 @@ export const updateSavedSearch = async (id, newName) => {
 };
 
 export const saveNewSearch = async (newName) => {
-  const response = await fetch(`/saveNewSearch`, { 
+  const response = await fetch(`/api/saveNewSearch`, { 
     method: 'PUT',
     headers: {
       'Accept': 'application/json',

@@ -1,17 +1,18 @@
 const express = require('express');
 const bodyParser = require("body-parser");
+const cors = require('cors');
 
 const app = express();
 
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
 const swaggerDocument = YAML.load('./swagger.yaml');
+
  
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cors());
 
 
 const port = process.env.PORT || 5000;
@@ -39,13 +40,13 @@ app.get('/api/getSavedSearches', (req, res) => {
   res.send(items);
 });
 
-app.delete('/deleteSavedSearch/:id', (req, res) => {
+app.delete('/api/deleteSavedSearch/:id', (req, res) => {
   let itemsModified = items.filter(item => item.id !== Number(req.params.id));
   items = [...itemsModified];
   res.send(items);
 });
 
-app.post('/updateSavedSearch/:id', (req, res) => {
+app.post('/api/updateSavedSearch/:id', (req, res) => {
   const { name } = req.body;
   const isNewName = !items.filter(x => x.name === name).length;
 
@@ -69,7 +70,7 @@ app.post('/updateSavedSearch/:id', (req, res) => {
 });
 
 
-app.put('/saveNewSearch', (req, res) => {
+app.put('/api/saveNewSearch', (req, res) => {
   const { name } = req.body;
   const isNewName = !items.filter(x => x.name === name).length;
 

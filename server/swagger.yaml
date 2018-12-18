@@ -2,22 +2,120 @@ swagger: "2.0"
 
 info:
   version: 1.0.0
-  title: API
+  title: Saved Searches
   description: API for Saved Searches
 
 schemes:
   - http
-host: 10.25.9.232:5000
+host: localhost:5000
 basePath: /api
+consumes:
+  - application/json
+produces:
+  - application/json 
 
 paths:
   /getSavedSearches:
     get:
+      tags:
+        - "Saved Searches List"
       summary: Gets saved searches
       description: Returns a list containing all saved searches.
       responses:
         200:
-          description: A list of Saved Searches
+          description: "succesful operation"
+          schema:
+            type: array
+            items:
+              required:
+                - name
+              properties:
+                id:
+                  type: number
+                name:
+                  type: string
+                  
+  
+  /deleteSavedSearch/{id}:
+    delete:
+      tags:
+        - "Saved Searches List"
+      summary: Delete saved search
+      description: Delete saved search by id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The save searches' id
+          type: integer
+      responses:
+        200:
+          description: "succesful operation"
+          schema:
+            type: array
+            items:
+              required:
+                - name
+              properties:
+                id:
+                  type: number
+                name:
+                  type: string
+                  
+  /updateSavedSearch/{id}:
+   post:
+      tags:
+        - "Saved Searches List"
+      summary: Update saved search
+      description: Update saved search by id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The save searches' id
+          type: integer
+        - name: saveSearch
+          in: body
+          description: The save searches' new name
+          schema:
+            required:
+              - name
+            properties:
+              name:
+                type: string
+      responses:
+        200:
+          description: "succesful operation"
+          schema:
+            type: array
+            items:
+              required:
+                - name
+              properties:
+                id:
+                  type: number
+                name:
+                  type: string
+
+  /saveNewSearch:
+    put:
+      tags:
+        - "Saved Searches List"
+      summary: Save new saved search
+      description: Save new saved search
+      parameters:
+        - name: saveSearch
+          in: body
+          description: The save searches' new name
+          schema:
+            required:
+              - name
+            properties:
+              name:
+                type: string
+      responses:
+        200:
+          description: "succesful operation"
           schema:
             type: array
             items:
